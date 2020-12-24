@@ -9,13 +9,14 @@
 				"-g",
 				"${file}",
 				"-o",
-				"${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-lcrypto"
 			],
 			"options": {
 				"cwd": "/usr/bin"
 			},
 			"problemMatcher": [
-				"$gcc"
+                "$gcc"
 			],
 			"group": {
 				"kind": "build",
