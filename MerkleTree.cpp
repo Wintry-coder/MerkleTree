@@ -1,24 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <openssl/sha.h>
-#include <algorithm>
-#include <string.h>
 #include "MerkleTree.h"
+
 using namespace std;
-
-void calSHA256(char* inp,char out_buff[65]){
-  unsigned char hash[SHA256_DIGEST_LENGTH];
-  SHA256_CTX sha256;
-  SHA256_Init(&sha256);
-  SHA256_Update(&sha256, inp, strlen(inp));
-  SHA256_Final(hash, &sha256);
-
-  for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
-  {
-    sprintf(out_buff + (i * 2), "%02x", hash[i]);
-  }
-  out_buff[65] = 0;
-}
 
 int main() {
    int n = 0;
@@ -30,15 +12,46 @@ int main() {
          break;
    }
    cout << "请输入每个数据块的数据字符串：\n";
-   vector<char[65]>data(n);
    vector<char[65]>buff(n);
+   vector<char*>data(n);
+   string s;
    for(int i = 1; i <= n; i++){
       printf("第%d个：",i);
-      cin>>data[i-1];
-      calSHA256(data[i-1],buff[i-1]);
+      cin>>s;
+      char *p=(char*)s.c_str();
+      calSHA256(p,buff[i-1]);
+      data[i-1] = buff[i-1];
       cout<<"该数据块对应的SHA256哈希值为:"<<buff[i-1]<<endl;
    }
-
+   MerkleTree mt = MerkleTree(data);
+   printf("root: %s\n",mt.root());
+   int op = 0;
+   while(1)
+   {
+      cout<<"请输入操作：\n";
+      cout<<"1.更新数据块 2.插入数据块 3.删除数据块 4.检索数据块 5.打印MerkleTree 0.退出\n";
+      cin>>op;
+      if(op == 0)
+         break;
+      switch (op)
+      {
+      case 1:
+         break;
+      case 2:
+         break;
+      case 3:
+         break;
+      case 4:
+         break; 
+      case 5:
+         break;    
+      default:
+         cout<<"请正确输入！";
+         break;
+      }
+      
+   }
    return 0;
  
 }
+
