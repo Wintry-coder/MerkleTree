@@ -6,6 +6,10 @@
         "algorithm": "cpp",
         "array": "cpp",
         "string": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "deque": "cpp",
+        "new": "cpp",
+        "*.tcc": "cpp",
+        "type_traits": "cpp"
     }
 }
