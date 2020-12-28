@@ -12,7 +12,7 @@ int main() {
          break;
    }
    cout << "Please enter the data string for each data block:\n";
-   filter = malloc(FILTER_SIZE_BYTES);
+   
    vector<string> data;
    string s;
    getchar();
@@ -95,7 +95,6 @@ int main() {
       }
       
    }
-   free(filter);
    return 0;
 }
 
