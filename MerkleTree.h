@@ -21,8 +21,7 @@ string SHA256(string data) {
   return string((char*)hash);
 }
 struct MerkleTree;
-struct DataHashNode
-{
+struct DataHashNode{
     DataHashNode *left;
     DataHashNode *right;
     DataHashNode *parent;
@@ -31,47 +30,20 @@ struct DataHashNode
     int left_index;
     int right_index;
     BloomFilter *bf;
+    
     DataHashNode(string str, MerkleTree* tree, int i):left(nullptr),right(nullptr),parent(nullptr),left_index(i),right_index(i),
     hash_(str),bf(nullptr),tree(tree){}
 
     DataHashNode(DataHashNode* _left,DataHashNode* _right,DataHashNode* _parent,string _hash,MerkleTree* tree):left(_left),
     right(_right),parent(_parent),hash_(_hash),tree(tree),left_index(left->left_index){
-        if(right == nullptr)
-            right_index = left->right_index;
-        else
-            right_index = right->right_index;
-        int n = right_index - left_index+ 1;
-        bf = new BloomFilter(n, miss_rate);
-        for(int i=left_index; i<=right_index; i++) {
-            bf->insertHash(((tree->leaves)[i])->hash_);
-        }
+        right_index = right == nullptr?left->right_index:right->right_index;
+        createBF();
     }
     DataHashNode* findBF(string hashstr);
+    void createBF();
 };
 
-DataHashNode* DataHashNode::findBF(string hashstr){
-    if(left == nullptr && right == nullptr) {  
-        if(hashstr == tree->leaves[left_index]->hash_) {
-            return (tree->leaves)[left_index];
-        }
-        return nullptr;
-    }
-    else { 
-        if(!bf->matchHash(hashstr))
-            return nullptr;
-        else { 
-            DataHashNode* left_ = left->findBF(hashstr);
-            DataHashNode* right_ = right->findBF(hashstr);
-            if(left)
-                return left;
-            else 
-                return right;
-        }
-    }    
-}
-
 struct MerkleTree{
-public:
     DataHashNode* root;
     vector<DataHashNode*> leaves;
 
@@ -96,7 +68,6 @@ public:
     void UpdateMerkleTree(int index, string str);
 
 };
-
 DataHashNode* MerkleTree::InitMerkleTree(vector<DataHashNode*> &nodes){
     if(nodes.size() == 1) 
         return nodes[0];
@@ -191,6 +162,35 @@ void MerkleTree::UpdateMerkleTree(int index, string str){
         current_parent->hash_ = hash_;
         leaf = current_parent;
         current_parent = current_parent->parent;
+    }    
+}
+
+void DataHashNode::createBF(){
+    int n = right_index - left_index+ 1;
+    bf = new BloomFilter(n, miss_rate);
+    for(int i=left_index; i<=right_index; i++) {
+        bf->insertHash(((tree->leaves)[i])->hash_);
+    }    
+}
+
+DataHashNode* DataHashNode::findBF(string hashstr){
+    if(left == nullptr && right == nullptr) {  
+        if(hashstr == (tree->leaves)[left_index]->hash_) {
+            return (tree->leaves)[left_index];
+        }
+        return nullptr;
+    }
+    else { 
+        if(!bf->matchHash(hashstr))
+            return nullptr;
+        else { 
+            DataHashNode* left_ = left->findBF(hashstr);
+            DataHashNode* right_ = right == nullptr?nullptr:right->findBF(hashstr);
+            if(left_)
+                return left_;
+            else 
+                return right_;
+        }
     }    
 }
 #endif

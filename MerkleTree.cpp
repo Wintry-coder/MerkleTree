@@ -1,5 +1,4 @@
 #include "MerkleTree.h"
-unsigned char* filter;
 using namespace std;
 
 int main() {
