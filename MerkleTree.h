@@ -26,9 +26,9 @@ struct DataHashNode{
     DataHashNode *right;
     DataHashNode *parent;
     MerkleTree *tree;
-    string hash_;
-    int left_index;
-    int right_index;
+    string hash_;//hash值
+    int left_index;//最左边的叶子节点的索引
+    int right_index;//最右边的叶子节点的索引
     BloomFilter *bf;
     
     DataHashNode(string str, MerkleTree* tree, int i):left(nullptr),right(nullptr),parent(nullptr),left_index(i),right_index(i),
